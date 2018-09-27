@@ -1,0 +1,56 @@
+# Copyright (C) 2012 The Android Open Source Project
+#
+# IMPORTANT: Do not create world writable files or directories.
+# This is a common source of Android security bugs.
+#
+
+service ril-daemon /vendor/bin/hw/rild -l ${vendor.sec.rild.libpath}
+    class main
+    user radio
+    group radio cache inet misc audio sdcard_r sdcard_rw log vpn system readproc wakelock oem_5432
+    capabilities BLOCK_SUSPEND NET_ADMIN NET_RAW SYS_ADMIN CHOWN DAC_READ_SEARCH
+    socket sap_uim_socket1 stream 660 bluetooth bluetooth
+    onrestart restart cpboot-daemon
+
+service ril-daemon1 /vendor/bin/hw/rild -c 2 -l ${vendor.sec.rild.libpath2}
+    class main
+    user radio
+    group radio cache inet misc audio sdcard_r sdcard_rw log vpn system readproc wakelock oem_5432
+    capabilities BLOCK_SUSPEND NET_ADMIN NET_RAW SYS_ADMIN CHOWN DAC_READ_SEARCH
+    disabled
+
+on property:persist.sys.cpboot=disable
+    stop ril-daemon
+    stop cpboot-daemon
+
+service SMD-daemon /vendor/bin/smdexe
+    class main
+    user root
+    group system radio inet net_raw
+
+# DIAG
+service DIAG-daemon /system/bin/diagexe
+    class main
+    user root
+    group system radio inet net_raw
+
+# LSI CDMA project daemon support dun function
+service VC-daemon /system/bin/vcd
+    class main
+    user root
+    group system
+    disabled
+    seclabel u:r:vcd:s0
+
+on property:telephony.lteOnCdmaDevice=1
+    start VC-daemon
+
+on early-boot
+# Assign TCP buffer thresholds to be ceiling value of technology maximums
+# Increased technology maximums should be reflected here.
+    write /proc/sys/net/core/rmem_max 2097152
+    write /proc/sys/net/core/wmem_max 2097152
+
+on property:init.svc.ril-daemon1=restarting
+    restart ril-daemon
+

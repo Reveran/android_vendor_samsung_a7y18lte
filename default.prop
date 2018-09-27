@@ -1,0 +1,24 @@
+#
+# ADDITIONAL VENDOR DEFAULT PROPERTIES
+#
+persist.sys.usb.config=mtp
+ro.zygote=zygote64_32
+ro.telephony.default_network=9
+ro.supportmodel.mptcp=1
+ro.radio.noril=no
+ro.telephony.default_cdma_sub=0
+dalvik.vm.image-dex2oat-Xms=64m
+dalvik.vm.image-dex2oat-Xmx=64m
+dalvik.vm.dex2oat-Xms=64m
+dalvik.vm.dex2oat-Xmx=512m
+ro.dalvik.vm.native.bridge=0
+dalvik.vm.usejit=true
+dalvik.vm.usejitprofiles=true
+dalvik.vm.dexopt.secondary=true
+dalvik.vm.appimageformat=lz4
+pm.dexopt.first-boot=quicken
+pm.dexopt.boot=verify
+pm.dexopt.install=quicken
+pm.dexopt.bg-dexopt=speed-profile
+pm.dexopt.ab-ota=speed-profile
+debug.atrace.tags.enableflags=0
